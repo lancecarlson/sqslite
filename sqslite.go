@@ -25,9 +25,10 @@ func main() {
 
 	region := flag.String("r", "", "region")
 	qName := flag.String("q", "", "queue name")
+	del := flag.Bool("d", false, "delete message")
 	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
-
 	flag.Parse()
+	if *del { cmd = "delete" }
 
 	c, err := sqs.NewFrom(access, secret, *region)
 	if err != nil { panic(err) }
@@ -42,6 +43,13 @@ func main() {
 		os.Stdout.Write(b)
 	} else if cmd == "receive" {
 		resp, err := q.ReceiveMessage(*maxNumberOfMessages)
+		if err != nil { panic(err) }
+		b, err := json.Marshal(resp)
+		if err != nil { panic(err) }
+		os.Stdout.Write(b)
+	} else if cmd == "delete" {
+		m := &sqs.Message{ReceiptHandle: string(b)}
+		resp, err := q.DeleteMessage(m)
 		if err != nil { panic(err) }
 		b, err := json.Marshal(resp)
 		if err != nil { panic(err) }
