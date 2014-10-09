@@ -33,7 +33,7 @@ func main() {
 	}
 
 	qName := flag.String("q", "", "queue name")
-	region := flag.String("r", "", "region (ie: us-east-1)")
+	region := flag.String("r", "us-east-1", "region")
 	del := flag.Bool("d", false, "delete message (send only)")
 	format := flag.String("f", "xml", "response format (xml or json)")
 	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
