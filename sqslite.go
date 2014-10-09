@@ -4,10 +4,19 @@ import (
 	"flag"
 	"os"
 	"io/ioutil"
+	"encoding/xml"
 	"encoding/json"
 	"github.com/crowdmob/goamz/sqs"
 	"github.com/andrew-d/go-termutil"
 )
+
+func Format(format string, resp interface {}) ([]byte, error) {
+	if format == "json" {
+		return json.Marshal(resp)
+	} else {
+		return xml.Marshal(resp)
+	}
+}
 
 func main() {
 	cmd := "receive"
@@ -23,11 +32,16 @@ func main() {
 		cmd = "send"
 	}
 
-	region := flag.String("r", "", "region")
 	qName := flag.String("q", "", "queue name")
-	del := flag.Bool("d", false, "delete message")
+	region := flag.String("r", "", "region (ie: us-east-1)")
+	del := flag.Bool("d", false, "delete message (send only)")
+	format := flag.String("f", "xml", "response format (xml or json)")
 	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
 	flag.Parse()
+	if *qName == "" || *region == "" {
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
 	if *del { cmd = "delete" }
 
 	c, err := sqs.NewFrom(access, secret, *region)
@@ -38,20 +52,20 @@ func main() {
 	if cmd == "send" {
 		resp, err := q.SendMessage(string(b))
 		if err != nil { panic(err) }
-		b, err := json.Marshal(resp)
+		b, err := Format(*format, resp)
 		if err != nil { panic(err) }
 		os.Stdout.Write(b)
 	} else if cmd == "receive" {
 		resp, err := q.ReceiveMessage(*maxNumberOfMessages)
 		if err != nil { panic(err) }
-		b, err := json.Marshal(resp)
+		b, err := Format(*format, resp)
 		if err != nil { panic(err) }
 		os.Stdout.Write(b)
 	} else if cmd == "delete" {
 		m := &sqs.Message{ReceiptHandle: string(b)}
 		resp, err := q.DeleteMessage(m)
 		if err != nil { panic(err) }
-		b, err := json.Marshal(resp)
+		b, err := Format(*format, resp)
 		if err != nil { panic(err) }
 		os.Stdout.Write(b)
 	}
