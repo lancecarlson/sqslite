@@ -1,0 +1,40 @@
+#!/bin/bash                                                                                                             
+if [ -z "${AWS_ACCESS_KEY_ID-}"  ]; then
+    echo "Need AWS_ACCESS_KEY_ID to be set"
+    exit
+fi
+
+if [ -z "${AWS_SECRET_ACCESS_KEY-}"  ]; then
+    echo "Need AWS_SECRET_ACCESS_KEY to be set"
+    exit
+fi
+
+if [ -z "${QUEUE_NAME-}"  ]; then
+    echo "Need QUEUE_NAME to be set"
+    exit
+fi
+
+if [ -z "${QUEUE_REGION-}"  ]; then
+    echo "Need QUEUE_REGION to be set"
+    exit
+fi
+
+echo "Waiting for job..."
+msg=$(sqslite -q $QUEUE_NAME -r $QUEUE_REGION -f json)
+
+if [ $? -ne 0 ]; then
+    exit $?
+fi
+
+body=$(echo $msg | jq '.Messages[0].Body')
+receipt=$(echo $msg | jq '.Messages[0].ReceiptHandle' | sed -e 's/^"//'  -e 's/"$//')
+
+if [ "$body" != null ]; then
+    ./$1 "$body"
+    echo $receipt | sqslite -q $QUEUE_NAME -r $QUEUE_REGION -d
+    printf "\n"
+else
+    echo "Empty Body"
+fi
+
+./$0 $1

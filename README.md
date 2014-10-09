@@ -21,3 +21,11 @@ sqslite -q queue-name -r us-east-1
 ```
 echo "ReceiptHandlerId" | sqslite -q queue-name -r us-east-1 -d
 ```
+
+### Full Example
+
+See examples folder for the work script. You can run the script like this:
+
+```
+QUEUE_NAME=sqslite QUEUE_REGION=us-east-1 ./work job
+```
