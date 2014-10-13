@@ -8,7 +8,7 @@ Amazon SQS Lite/Simple CLI for getting messages in and out of SQS
 ```
 export AWS_ACCESS_KEY_ID=whatever
 export AWS_SECRET_ACCESS_KEY=whatever
-echo "message" | sqslite -q queue-name -r us-east-1 -c s
+echo "message" | sqslite -q queue-name -c s
 ```
 
 ### Receive a message
