@@ -23,26 +23,31 @@ func main() {
 	access := os.Getenv("AWS_ACCESS_KEY_ID")
 	secret := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
+	qName := flag.String("q", "", "queue name")
+	region := flag.String("r", "us-east-1", "region")
+	format := flag.String("f", "xml", "response format (xml or json)")
+	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
+	del := flag.Bool("d", false, "delete message")
+	flag.Parse()
+
 	var b []byte
 	var err error
 	// If stdin input
 	if !termutil.Isatty(os.Stdin.Fd()) {
 		b, err = ioutil.ReadAll(os.Stdin)
 		if err != nil { panic(err) }
-		cmd = "send"
+		if *del { 
+			cmd = "delete"
+		} else { 
+			cmd = "send" 
+		}
 	}
 
-	qName := flag.String("q", "", "queue name")
-	region := flag.String("r", "us-east-1", "region")
-	del := flag.Bool("d", false, "delete message (send only)")
-	format := flag.String("f", "xml", "response format (xml or json)")
-	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
-	flag.Parse()
+	// If required fields are are not filled
 	if *qName == "" || *region == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
-	if *del { cmd = "delete" }
 
 	c, err := sqs.NewFrom(access, secret, *region)
 	if err != nil { panic(err) }
