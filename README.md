@@ -14,12 +14,12 @@ echo "message" | sqslite -q queue-name -r us-east-1 -c s
 ### Receive a message
 
 ```
-sqslite -q queue-name -r us-east-1
+sqslite -q queue-name
 ```
 
 ### Delete a message
 ```
-echo "ReceiptHandlerId" | sqslite -q queue-name -r us-east-1 -c d
+echo "ReceiptHandlerId" | sqslite -q queue-name -c d
 ```
 
 ### Full Example

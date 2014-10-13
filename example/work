@@ -20,7 +20,7 @@ if [ -z "${QUEUE_REGION-}"  ]; then
 fi
 
 echo "Waiting for job..."
-msg=$(sqslite -q $QUEUE_NAME -r $QUEUE_REGION -f json)
+msg=$(sqslite -q $QUEUE_NAME -re $QUEUE_REGION -f json)
 
 if [ $? -ne 0 ]; then
     exit $?
@@ -31,7 +31,7 @@ receipt=$(echo $msg | jq '.Messages[0].ReceiptHandle' | sed -e 's/^"//'  -e 's/"
 
 if [ "$body" != null ]; then
     ./$1 "$body"
-    echo $receipt | sqslite -q $QUEUE_NAME -r $QUEUE_REGION -c d
+    echo $receipt | sqslite -q $QUEUE_NAME -re $QUEUE_REGION -c d
     printf "\n"
 else
     echo "Empty Body"
