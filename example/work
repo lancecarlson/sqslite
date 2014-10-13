@@ -31,7 +31,7 @@ receipt=$(echo $msg | jq '.Messages[0].ReceiptHandle' | sed -e 's/^"//'  -e 's/"
 
 if [ "$body" != null ]; then
     ./$1 "$body"
-    echo $receipt | sqslite -q $QUEUE_NAME -r $QUEUE_REGION -d
+    echo $receipt | sqslite -q $QUEUE_NAME -r $QUEUE_REGION -c d
     printf "\n"
 else
     echo "Empty Body"

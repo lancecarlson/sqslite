@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"encoding/json"
 	"github.com/crowdmob/goamz/sqs"
-	"github.com/andrew-d/go-termutil"
 )
 
 func Format(format string, resp interface {}) ([]byte, error) {
@@ -19,28 +18,21 @@ func Format(format string, resp interface {}) ([]byte, error) {
 }
 
 func main() {
-	cmd := "receive"
 	access := os.Getenv("AWS_ACCESS_KEY_ID")
 	secret := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
+	cmd := flag.String("c", "r", "command (r=receive, s=send, d=delete)")
 	qName := flag.String("q", "", "queue name")
-	region := flag.String("r", "us-east-1", "region")
+	region := flag.String("re", "us-east-1", "region")
 	format := flag.String("f", "xml", "response format (xml or json)")
 	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
-	del := flag.Bool("d", false, "delete message")
 	flag.Parse()
 
 	var b []byte
 	var err error
-	// If stdin input
-	if !termutil.Isatty(os.Stdin.Fd()) {
+        if *cmd == "s" || *cmd == "d" {
 		b, err = ioutil.ReadAll(os.Stdin)
 		if err != nil { panic(err) }
-		if *del { 
-			cmd = "delete"
-		} else { 
-			cmd = "send" 
-		}
 	}
 
 	// If required fields are are not filled
@@ -54,19 +46,19 @@ func main() {
 	q, err := c.GetQueue(*qName)
 	if err != nil { panic(err) }
 
-	if cmd == "send" {
+	if *cmd == "s" {
 		resp, err := q.SendMessage(string(b))
 		if err != nil { panic(err) }
 		b, err := Format(*format, resp)
 		if err != nil { panic(err) }
 		os.Stdout.Write(b)
-	} else if cmd == "receive" {
+	} else if *cmd == "r" {
 		resp, err := q.ReceiveMessage(*maxNumberOfMessages)
 		if err != nil { panic(err) }
 		b, err := Format(*format, resp)
 		if err != nil { panic(err) }
 		os.Stdout.Write(b)
-	} else if cmd == "delete" {
+	} else if *cmd == "d" {
 		m := &sqs.Message{ReceiptHandle: string(b)}
 		resp, err := q.DeleteMessage(m)
 		if err != nil { panic(err) }
