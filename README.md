@@ -1,7 +1,7 @@
 sqslite
 =======
 
-Amazon SQS Lite/Simple CLI for getting messages in and out of SQS
+Amazon SQS Lite/Simple CLI for getting messages in and out of Amazon SQS
 
 ### Send a message
 
