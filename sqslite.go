@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"flag"
-	"github.com/crowdmob/goamz/sqs"
 	"io/ioutil"
 	"os"
+
+	"github.com/crowdmob/goamz/sqs"
 )
 
 func Format(format string, resp interface{}) ([]byte, error) {
