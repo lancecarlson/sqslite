@@ -10,7 +10,8 @@ import (
 	"github.com/crowdmob/goamz/sqs"
 )
 
-func Format(format string, resp interface{}) ([]byte, error) {
+// formatResp takes the response and formats it in JSON or XML. 
+func formatResp(format string, resp interface{}) ([]byte, error) {
 	if format == "json" {
 		return json.Marshal(resp)
 	}
@@ -66,7 +67,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		b, err := Format(*format, resp)
+		b, err := formatResp(*format, resp)
 		if err != nil {
 			panic(err)
 		}
@@ -76,7 +77,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		b, err := Format(*format, resp)
+		b, err := formatResp(*format, resp)
 		if err != nil {
 			panic(err)
 		}
@@ -87,7 +88,7 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		b, err := Format(*format, resp)
+		b, err := formatResp(*format, resp)
 		if err != nil {
 			panic(err)
 		}
