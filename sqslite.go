@@ -12,9 +12,8 @@ import (
 func Format(format string, resp interface{}) ([]byte, error) {
 	if format == "json" {
 		return json.Marshal(resp)
-	} else {
-		return xml.Marshal(resp)
 	}
+	return xml.Marshal(resp)
 }
 
 func main() {
@@ -28,6 +27,21 @@ func main() {
 	maxNumberOfMessages := flag.Int("mN", 1, "maximum messages")
 	flag.Parse()
 
+	// Check required environment variables
+	if access == "" {
+		panic("AWS_ACCESS_KEY_ID is undefined")
+	}
+
+	if secret == "" {
+		panic("AWS_SECRET_ACCESS_KEY is undefined")
+	}
+
+	// If required flags are are not filled
+	if *qName == "" || *region == "" {
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
 	var b []byte
 	var err error
 	if *cmd == "s" || *cmd == "d" {
@@ -35,12 +49,6 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-	}
-
-	// If required fields are are not filled
-	if *qName == "" || *region == "" {
-		flag.PrintDefaults()
-		os.Exit(1)
 	}
 
 	c, err := sqs.NewFrom(access, secret, *region)
@@ -83,5 +91,8 @@ func main() {
 			panic(err)
 		}
 		os.Stdout.Write(b)
+	} else {
+		flag.PrintDefaults()
+		panic("Invalid command")
 	}
 }
