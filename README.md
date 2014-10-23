@@ -1,7 +1,7 @@
 sqslite
 =======
 
-Amazon SQS Lite/Simple CLI for getting messages in and out of Amazon SQS
+Amazon SQS Lite/Simple CLI for getting messages in and out of Amazon SQS. Useful for creating polyglot jobs/workers in BASH
 
 ### Send a message
 
