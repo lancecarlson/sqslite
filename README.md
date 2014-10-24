@@ -32,7 +32,11 @@ QUEUE_NAME=sqslite QUEUE_REGION=us-east-1 ./work job
 
 ### Installation 
 
-sqslite was written in Go so you can compile it on any platform Go supports (windows, linux or OS X)! To get started, install go and then go the following:
+sqslite was written in Go so you can compile it on any platform Go supports (windows, linux or OS X)! 
+
+To get started, install go: https://golang.org/doc/install
+
+Then do the following to get a binary for your target platform:
 
 ```
 go get github.com/crowdmob/goamz/sqs
@@ -40,7 +44,5 @@ go get github.com/crowdmob/goamz/sqs
 # Make sure you're in the cloned sqs directory
 go build
 ```
-
-Install Go: https://golang.org/doc/install
 
 You can also run go install which will install the binary universally if you have it setup properly. See Go manual for instructions.
