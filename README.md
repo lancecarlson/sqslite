@@ -32,6 +32,12 @@ QUEUE_NAME=sqslite QUEUE_REGION=us-east-1 ./work job
 
 ### Installation 
 
+You can find a binary for your target OS in the releases section:
+
+https://github.com/lancecarlson/sqslite/releases
+
+### Install from source
+
 sqslite was written in Go so you can compile it on any platform Go supports (windows, linux or OS X)! 
 
 To get started, install go: https://golang.org/doc/install
